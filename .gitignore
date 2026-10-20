@@ -1,0 +1,25 @@
+# Compilação e Artefatos do Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.rar
+
+# Logs
+*.log
+
+# Arquivos do VSCode e IDEs
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Configurações locais / Senhas / Env
+.env
+application-local.properties
