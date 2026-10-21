@@ -1,49 +1,64 @@
 package com.alugae.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity 
+@Table(name = "imoveis")
 public class Imovel {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String titulo;
     private String cidade;
     private double precoPorNoite;
-    private Set<String> comodidades; // Lista de comodidades únicas
+
+    // Construtor vazio (obrigatório para o JPA funcionar)
+    public Imovel() {
+    }
 
     public Imovel(Long id, String titulo, String cidade, double precoPorNoite) {
         this.id = id;
         this.titulo = titulo;
         this.cidade = cidade;
-        this.id = id;
         this.precoPorNoite = precoPorNoite;
-        this.comodidades = new HashSet<>(); // Inicializa o Set vazio
     }
 
-    // Método para adicionar comodidade (se já existir, o Set ignora e não duplica!)
-    public void adicionarComodidade(String comodidade) {
-        this.comodidades.add(comodidade);
-    }
-
-    public void exibirDetalhes() {
-        System.out.println("ID: " + id + "Imóvel: " + titulo + " | Cidade: " + cidade + " | R$ " + precoPorNoite + " /noite");
-        System.out.println("Comodidades: " + comodidades);
-        System.out.println("--------------------------------------------------");
-    }
-
+    // Getters e Setters
     public Long getId() {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    } 
+
     public String getTitulo() {
         return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public String getCidade() {
         return cidade;
     }
 
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
     public double getPrecoPorNoite() {
         return precoPorNoite;
+    }
+
+    public void setPrecoPorNoite(double precoPorNoite) {
+        this.precoPorNoite = precoPorNoite;
     }
 }
