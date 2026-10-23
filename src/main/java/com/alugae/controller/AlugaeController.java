@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
+import java.util.Optional;
 
-@RestController 
-@RequestMapping("/imoveis") // Define a rota base para este controller
+@RestController
+@RequestMapping("/imoveis")
 public class AlugaeController {
 
     private final ImovelService imovelService;
@@ -26,30 +26,32 @@ public class AlugaeController {
     }
 
     // GET: Buscar por ID (/imoveis/1)
-    @GetMapping("/filtrar")
-    public List<Imovel> filtrarImoveis(@RequestParam double precoMax) {
-        return imovelService.filtrarPorPrecoMaximo(precoMax);
+    @GetMapping("/{id}")
+    public ResponseEntity<Imovel> buscarPorId(@PathVariable Long id) {
+        Optional<Imovel> imovel = imovelService.buscarPorId(id);
+
+        if (imovel.isPresent()) {
+            return ResponseEntity.ok(imovel.get()); // Retorna 200 OK com o imóvel
+        }
+        return ResponseEntity.notFound().build(); // Retorna 404 se não achar
     }
 
     // POST: Cadastrar novo imóvel (/imoveis)
     @PostMapping
     public ResponseEntity<Imovel> cadastrar(@RequestBody Imovel imovel) {
-        Imovel novoImovel = imovelService.cadastrar(imovel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoImovel); // Devolve status 201 Created!
+        Imovel novoImovel = imovelService.salvar(imovel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoImovel); // Retorna 201 Created
     }
 
     // DELETE: Deletar imóvel por ID (/imoveis/1)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        boolean deletado = imovelService.deletar(id);
-        if (deletado) {
-            return ResponseEntity.noContent().build(); // Status 204 No Content
+        Optional<Imovel> imovel = imovelService.buscarPorId(id);
+
+        if (imovel.isPresent()) {
+            imovelService.deletar(id);
+            return ResponseEntity.noContent().build(); // Retorna 204 No Content
         }
-        return ResponseEntity.notFound().build(); // Status 404 Not Found
+        return ResponseEntity.notFound().build(); // // Retorna 404 se não existir
     }
 }
-
-
-
-
-    

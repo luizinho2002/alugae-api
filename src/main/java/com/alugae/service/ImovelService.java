@@ -1,54 +1,35 @@
 package com.alugae.service;
 
 import com.alugae.model.Imovel;
+import com.alugae.repository.ImovelRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service // Diz ao Spring que esta classe é um componente de serviço gerenciado por ele
+@Service
 public class ImovelService {
 
-    // Lista salva na memória da aplicação
-    private final List<Imovel> imoveis = new ArrayList<>();
+    private final ImovelRepository imovelRepository;
 
-    // Construtor: Inicializa com 3 imóveis padrão para não começar vazia
-    public ImovelService() {
-        imoveis.add(new Imovel(1L, "Casa Beira-Mar com Wi-Fi", "Florianópolis", 350.00));
-        imoveis.add(new Imovel(2L, "Apartamento no Centro", "Curitiba", 180.00));
-        imoveis.add(new Imovel(3L, "Chácara com Piscina", "Gramado", 450.00));
+    // Injeção de dependência via construtor (boa prática recomendada no Spring)
+    public ImovelService(ImovelRepository imovelRepository) {
+        this.imovelRepository = imovelRepository;
     }
 
-    // 1. READ: Listar todos
+    public Imovel salvar(Imovel imovel) {
+        return imovelRepository.save(imovel);
+    }
+
     public List<Imovel> listarTodos() {
-        return imoveis;
+        return imovelRepository.findAll();
     }
 
-    // 2. READ: Buscar por ID
     public Optional<Imovel> buscarPorId(Long id) {
-        return imoveis.stream()
-                .filter(imovel -> imovel.getId().equals(id))
-                .findFirst();
+        return imovelRepository.findById(id);
     }
 
-    // 3. READ: Filtrar por preço máximo
-    public List<Imovel> filtrarPorPrecoMaximo(double precoMax) {
-        return imoveis.stream()
-                .filter(imovel -> imovel.getPrecoPorNoite() <= precoMax)
-                .toList();
-
+    public void deletar(Long id) {
+        imovelRepository.deleteById(id);
     }
-
-    // 4. CREATE: Cadastrar novo imóvel
-    public Imovel cadastrar(Imovel novoImovel) {
-        imoveis.add(novoImovel);
-        return novoImovel;
-    }
-
-    // 5. DELETE: Remover imóvel por ID
-    public boolean deletar(Long id) {
-        return imoveis.removeIf(imovel -> imovel.getId().equals(id));
-    }
-
 }
